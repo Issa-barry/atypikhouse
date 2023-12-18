@@ -18,7 +18,8 @@ RUN apt-get update && apt-get install -y \
 
 COPY .env .
 COPY . /var/www/html
-COPY default.conf /etc/nginx/conf.d/default.conf
+COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+# COPY default.conf /etc/nginx/conf.d/default.conf
 RUN apt-get update && apt-get install -y nano
 
 RUN composer install --no-scripts --no-interaction
@@ -30,6 +31,6 @@ EXPOSE 80
 
 # CMD ["php-fpm"]
 # Exécutez la commande artisan serve lors du démarrage du conteneur
-CMD ["php", "artisan", "serve", "--host", "issabarry.fr", "--port", "9003"]
+CMD ["supervisord", "-n"]
 
 LABEL image_name="atypikhouse"
