@@ -24,6 +24,8 @@ RUN chown -R www-data:www-data /var/www/html \
 
 EXPOSE 9001
 
-CMD ["php-fpm"]
+# CMD ["php-fpm"]
+# Exécutez la commande artisan serve lors du démarrage du conteneur
+CMD ["php", "artisan", "serve", "--host", "0.0.0.0", "--port", "8000"]
 
 LABEL image_name="atypikhouse"
