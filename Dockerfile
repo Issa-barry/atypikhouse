@@ -30,6 +30,6 @@ EXPOSE 80
 
 # CMD ["php-fpm"]
 # Exécutez la commande artisan serve lors du démarrage du conteneur
-CMD ["php", "artisan", "serve", "--host", "issabarry.fr", "--port", "9003", "supervisord", "-n"]
+CMD ["php", "artisan", "serve", "--host", "issabarry.fr", "--port", "9003"]
 
 LABEL image_name="atypikhouse"
