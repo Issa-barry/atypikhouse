@@ -1,7 +1,0 @@
-178.170.38.149 {
-    root /var/www/html/public
-    php_fastcgi app:9001
-    rewrite {
-        to {path} {path}/ /index.php?{query}
-    }
-}
