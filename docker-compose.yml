@@ -20,12 +20,20 @@ services:
       - "8003:80"
       - "444:443"
     volumes:
-      # - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
       - .:/var/www/html
     depends_on:
       - app
     networks:
       - laravel
+  # Mailing Server
+  mailhog:
+    image: mailhog/mailhog:latest
+    logging:
+      driver: "none"
+    ports:
+      - "1025:1025"
+      - "8025:8025"
 
 networks:
   laravel:
