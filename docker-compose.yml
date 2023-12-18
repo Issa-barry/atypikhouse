@@ -8,7 +8,5 @@ services:
     container_name: laravel-app
     volumes:
       - .:/var/www/html
-    networks:
-      - cady_default  # Use the existing network
     ports:
       - "9001:9001"
