@@ -18,7 +18,6 @@ RUN apt-get update && apt-get install -y \
 
 COPY .env .
 COPY . /var/www/html
-COPY default.conf /etc/nginx/conf.d/default.conf
 RUN apt-get update && apt-get install -y nano
 
 RUN composer install --no-scripts --no-interaction
