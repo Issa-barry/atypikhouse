@@ -7,7 +7,7 @@ services:
     container_name: atypikhouse
     restart: always
     ports:
-      - "9001:9000"
+      - "9001:9001"
     volumes:
       - .:/var/www/html
     env_file:

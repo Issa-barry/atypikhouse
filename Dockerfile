@@ -22,7 +22,7 @@ RUN composer install --no-scripts --no-interaction
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/storage
 
-EXPOSE 9000
+EXPOSE 9001
 
 CMD ["php-fpm"]
 
