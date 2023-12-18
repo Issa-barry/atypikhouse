@@ -1,0 +1,7 @@
+your-domain.com {
+    root /srv/public
+    php_fastcgi app:9000
+    rewrite {
+        to {path} {path}/ /index.php?{query}
+    }
+}
