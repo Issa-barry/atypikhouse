@@ -19,20 +19,23 @@ RUN apt-get update && \
     && docker-php-ext-install gd
 
 # Copie les fichiers de l'application Laravel dans le conteneur
-COPY . /var/www/html
-COPY .env .
+COPY atypikhouse/ /var/www/html
+COPY atypikhouse/.env.example /var/www/html/.env
 
 # Définit l'utilisateur www-data comme propriétaire des fichiers Laravel
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache && chmod -R 777 /var/www/html/storage
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Installe Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Installe les dépendances PHP de l'application Laravel
-RUN composer install --optimize-autoloader --no-dev
+RUN cd /var/www/html && composer install --optimize-autoloader --no-dev
+
+# Installe le fournisseur de service Barryvdh\Debugbar
+RUN cd /var/www/html && composer require barryvdh/laravel-debugbar
 
 # Génère la clé d'application Laravel
-RUN php artisan key:generate
+RUN cd /var/www/html && php artisan key:generate
 
 # Expose le port 80 pour Apache
 EXPOSE 80

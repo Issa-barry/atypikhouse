@@ -17,10 +17,10 @@ services:
     image: mysql:5.7
     container_name: atypikhouse-mysql
     environment:
-      MYSQL_ROOT_PASSWORD: root_password
-      MYSQL_DATABASE: laravel_database
-      MYSQL_USER: laravel_user
-      MYSQL_PASSWORD: laravel_password
+      MYSQL_ROOT_PASSWORD: dogomet
+      MYSQL_DATABASE: atypikhouse
+      MYSQL_USER: asma
+      MYSQL_PASSWORD: dogomet
     networks:
       - laravel
     volumes:
