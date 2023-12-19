@@ -22,7 +22,6 @@ RUN apt-get update && \
 
 # Copie les fichiers de l'application Laravel dans le conteneur
 COPY atypikhouse/ .
-COPY atypikhouse/.env.example /var/www/html/.env
 
 # Définit l'utilisateur www-data comme propriétaire des fichiers Laravel
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
