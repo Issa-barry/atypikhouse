@@ -1,32 +1,43 @@
-FROM php:7.4-fpm
+# Utilisez l'image PHP avec Composer installé
+FROM composer:2 AS builder
+
+WORKDIR /app
+
+# Copiez les fichiers de configuration
+COPY composer.json composer.json
+COPY composer.lock composer.lock
+
+# Installez les dépendances
+RUN composer install --no-dev --ignore-platform-reqs
+
+# Copiez le reste des fichiers
+COPY . .
+COPY .env .
+
+# Construisez l'application
+RUN composer dump-autoload --optimize
+
+# Image de production légère
+FROM php:7.4-fpm-alpine
 
 WORKDIR /var/www/html
 
-RUN apt-get update && apt-get install -y \
-    git \
-    unzip \
-    libzip-dev \
-    libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    nginx \
-    supervisor \
-    && docker-php-ext-install zip pdo_mysql \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j$(nproc) gd \
-    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+# Installez les dépendances nécessaires pour Laravel
+RUN apk add --no-cache --virtual .build-deps \
+    build-base \
+    autoconf \
+    && docker-php-ext-install pdo pdo_mysql \
+    && apk del .build-deps
 
-COPY .env .
-COPY . .
-RUN apt-get update && apt-get install -y nano
+# Copiez les fichiers de l'étape précédente
+COPY --from=builder /app /var/www/html
 
-RUN composer install --no-scripts --no-interaction
+# Définissez l'utilisateur et les permissions
+RUN addgroup -g 1000 -S www && \
+    adduser -u 1000 -D -S -G www www && \
+    chown -R www:www /var/www/html
 
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 775 /var/www/html/storage
-
-EXPOSE 80
+# Exposez le port sur lequel Laravel fonctionne par défaut
+EXPOSE 9002
 
 CMD ["php-fpm"]
-
-LABEL image_name="atypikhouse"
