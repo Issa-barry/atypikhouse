@@ -1,6 +1,8 @@
 # Utilisez l'image PHP 7.4 avec Apache
 FROM php:7.4-apache
 
+WORKDIR /var/www/html
+
 # Active le module Apache mod_rewrite
 RUN a2enmod rewrite
 
@@ -19,7 +21,7 @@ RUN apt-get update && \
     && docker-php-ext-install gd
 
 # Copie les fichiers de l'application Laravel dans le conteneur
-COPY atypikhouse/ /var/www/html
+COPY atypikhouse/ .
 COPY atypikhouse/.env.example /var/www/html/.env
 
 # Définit l'utilisateur www-data comme propriétaire des fichiers Laravel
