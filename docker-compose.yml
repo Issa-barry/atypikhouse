@@ -9,7 +9,7 @@ services:
     working_dir: /var/www/html
     env_file: .env
     networks:
-      - mynetwork
+      - laravel
     depends_on:
       - mysql
 
@@ -22,7 +22,7 @@ services:
       MYSQL_USER: laravel_user
       MYSQL_PASSWORD: laravel_password
     networks:
-      - mynetwork
+      - laravel
     volumes:
       - ./mysql/data:/var/lib/mysql
 
@@ -33,7 +33,7 @@ services:
       PMA_HOST: mysql
       PMA_PORT: 3306
     networks:
-      - mynetwork
+      - laravel
     depends_on:
       - mysql
     ports:
@@ -43,7 +43,7 @@ services:
     image: caddy:2.4.3
     container_name: atypikhouse-caddy
     networks:
-      - mynetwork
+      - laravel
     ports:
       - "80:80"
       - "443:443"
@@ -51,5 +51,5 @@ services:
       - ./Caddyfile:/etc/caddy/Caddyfile
 
 networks:
-  mynetwork:
+  laravel:
     driver: bridge
