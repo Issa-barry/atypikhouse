@@ -10,7 +10,13 @@ RUN apt-get update && \
     libzip-dev \
     zip \
     unzip \
-    && docker-php-ext-install zip pdo pdo_mysql
+    libonig-dev \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    && docker-php-ext-install zip pdo pdo_mysql mbstring exif pcntl bcmath \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install gd
 
 # Copie les fichiers de l'application Laravel dans le conteneur
 COPY . /var/www/html
