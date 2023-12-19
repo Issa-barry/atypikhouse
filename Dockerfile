@@ -22,13 +22,13 @@ RUN apt-get update && \
     && docker-php-ext-install gd
 
 # Copie les fichiers de l'application Laravel dans le conteneur
-COPY atypikhouse/ .
+COPY . .
 
 # Définit l'utilisateur www-data comme propriétaire des fichiers Laravel
 RUN chown -R www-data:www-data storage bootstrap/cache
 
 # Copie le fichier .env.example dans le conteneur
-COPY . .
+COPY .env .
 
 # Installe Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
