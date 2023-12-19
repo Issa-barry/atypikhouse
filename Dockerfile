@@ -1,49 +1,36 @@
-# Utilisez l'image PHP 7.4 avec Apache
 FROM php:7.4-apache
 
-# Définit le répertoire de travail à /var/www/html
 WORKDIR /var/www/html
 
-# Active le module Apache mod_rewrite
 RUN a2enmod rewrite
 
-# Installe les dépendances nécessaires pour Laravel
-RUN apt-get update && \
-    apt-get install -y \
-    libzip-dev \
-    zip \
-    unzip \
-    libonig-dev \
-    libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    && docker-php-ext-install zip pdo pdo_mysql mbstring exif pcntl bcmath \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd
+RUN apt-get update && apt-get install -y \
+    git \
+    unzip \
+    libzip-dev \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    nginx \
+    supervisor \
+    && docker-php-ext-install zip pdo_mysql \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j$(nproc) gd \
+    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Copie les fichiers de l'application Laravel dans le conteneur
-COPY . .
-
-# Définit l'utilisateur www-data comme propriétaire des fichiers Laravel
-RUN chown -R www-data:www-data storage bootstrap/cache
-
-# Copie le fichier .env.example dans le conteneur
 COPY .env .
+COPY . .
+RUN apt-get update && apt-get install -y nano
 
-# Installe Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
-# Installe les dépendances PHP de l'application Laravel
 RUN composer install --optimize-autoloader --no-dev
 
-# Installe le fournisseur de service Barryvdh\Debugbar
-RUN composer require barryvdh/laravel-debugbar
+RUN composer install --no-scripts --no-interaction
 
-# Génère la clé d'application Laravel
-RUN php artisan key:generate
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 775 /var/www/html/storage
 
-# Expose le port 80 pour Apache
 EXPOSE 80
 
-# Lance le serveur Apache au démarrage du conteneur
 CMD ["apache2-foreground"]
+
+LABEL image_name="atypikhouse"
