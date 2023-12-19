@@ -1,12 +1,55 @@
 version: '3.8'
 
 services:
-  app:
+  atypikhouse:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: laravel-app
+    container_name: atypikhouse
+    working_dir: /var/www/html
+    env_file: .env
+    networks:
+      - mynetwork
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:5.7
+    container_name: atypikhouse-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: laravel_database
+      MYSQL_USER: laravel_user
+      MYSQL_PASSWORD: laravel_password
+    networks:
+      - mynetwork
     volumes:
-      - .:/var/www/html
+      - ./mysql/data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: atypikhouse-phpmyadmin
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+    networks:
+      - mynetwork
+    depends_on:
+      - mysql
     ports:
-      - "9001:9001"
+      - "8080:80"
+
+  caddy:
+    image: caddy:2.4.3
+    container_name: atypikhouse-caddy
+    networks:
+      - mynetwork
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+
+networks:
+  mynetwork:
+    driver: bridge

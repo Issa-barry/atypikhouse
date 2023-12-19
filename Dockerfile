@@ -1,32 +1,35 @@
-FROM php:7.4-fpm
+# Utilisez l'image PHP 7.4 avec Apache
+FROM php:7.4-apache
 
-WORKDIR /var/www/html
+# Active le module Apache mod_rewrite
+RUN a2enmod rewrite
 
-RUN apt-get update && apt-get install -y \
-    git \
-    unzip \
+# Installe les dépendances nécessaires pour Laravel
+RUN apt-get update && \
+    apt-get install -y \
     libzip-dev \
-    libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    nginx \
-    supervisor \
-    && docker-php-ext-install zip pdo_mysql \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j$(nproc) gd \
-    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+    zip \
+    unzip \
+    && docker-php-ext-install zip pdo pdo_mysql
 
+# Copie les fichiers de l'application Laravel dans le conteneur
+COPY . /var/www/html
 COPY .env .
-COPY . .
-RUN apt-get update && apt-get install -y nano
 
-RUN composer install --no-scripts --no-interaction
+# Définit l'utilisateur www-data comme propriétaire des fichiers Laravel
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache && chmod -R 777 /var/www/html/storage
 
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 775 /var/www/html/storage
+# Installe Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
+# Installe les dépendances PHP de l'application Laravel
+RUN composer install --optimize-autoloader --no-dev
+
+# Génère la clé d'application Laravel
+RUN php artisan key:generate
+
+# Expose le port 80 pour Apache
 EXPOSE 80
 
-CMD ["php-fpm"]
-
-LABEL image_name="atypikhouse"
+# Lance le serveur Apache au démarrage du conteneur
+CMD ["apache2-foreground"]

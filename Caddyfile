@@ -1,0 +1,4 @@
+issabarry.fr {
+    reverse_proxy atypikhouse:80
+  }
+  
