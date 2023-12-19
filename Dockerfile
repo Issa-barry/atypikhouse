@@ -1,8 +1,6 @@
-FROM php:7.4-apache
+FROM php:7.4-fpm
 
 WORKDIR /var/www/html
-
-RUN a2enmod rewrite
 
 RUN apt-get update && apt-get install -y \
     git \
@@ -22,8 +20,6 @@ COPY .env .
 COPY . .
 RUN apt-get update && apt-get install -y nano
 
-RUN composer install --optimize-autoloader --no-dev
-
 RUN composer install --no-scripts --no-interaction
 
 RUN chown -R www-data:www-data /var/www/html \
@@ -31,6 +27,6 @@ RUN chown -R www-data:www-data /var/www/html \
 
 EXPOSE 80
 
-CMD ["apache2-foreground"]
+CMD ["php-fpm"]
 
 LABEL image_name="atypikhouse"
