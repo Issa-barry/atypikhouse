@@ -1,6 +1,7 @@
 # Utilisez l'image PHP 7.4 avec Apache
 FROM php:7.4-apache
 
+# Définit le répertoire de travail à /var/www/html
 WORKDIR /var/www/html
 
 # Active le module Apache mod_rewrite
@@ -21,22 +22,25 @@ RUN apt-get update && \
     && docker-php-ext-install gd
 
 # Copie les fichiers de l'application Laravel dans le conteneur
-COPY . .
+COPY atypikhouse/ .
 
 # Définit l'utilisateur www-data comme propriétaire des fichiers Laravel
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chown -R www-data:www-data storage bootstrap/cache
+
+# Copie le fichier .env.example dans le conteneur
+COPY . .
 
 # Installe Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Installe les dépendances PHP de l'application Laravel
-RUN cd /var/www/html && composer install --optimize-autoloader --no-dev
+RUN composer install --optimize-autoloader --no-dev
 
 # Installe le fournisseur de service Barryvdh\Debugbar
-RUN cd /var/www/html && composer require barryvdh/laravel-debugbar
+RUN composer require barryvdh/laravel-debugbar
 
 # Génère la clé d'application Laravel
-RUN cd /var/www/html && php artisan key:generate
+RUN php artisan key:generate
 
 # Expose le port 80 pour Apache
 EXPOSE 80
