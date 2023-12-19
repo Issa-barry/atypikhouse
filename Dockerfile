@@ -1,4 +1,4 @@
-FROM php:7.4-fpm
+FROM php:7.4-apache
 
 WORKDIR /var/www/html
 
@@ -27,6 +27,7 @@ RUN chown -R www-data:www-data /var/www/html \
 
 EXPOSE 80
 
-CMD ["php-fpm"]
+# CMD ["php-fpm"]
+CMD ["apache2-foreground"]
 
 LABEL image_name="atypikhouse"
