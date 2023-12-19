@@ -21,7 +21,7 @@ RUN apt-get update && \
     && docker-php-ext-install gd
 
 # Copie les fichiers de l'application Laravel dans le conteneur
-COPY atypikhouse/ .
+COPY . .
 
 # Définit l'utilisateur www-data comme propriétaire des fichiers Laravel
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
