@@ -1,43 +1,27 @@
-# Utilisez l'image PHP avec Composer installé
-FROM composer:2 AS builder
+# Utiliser l'image officielle PHP 7.4
+FROM php:7.4-apache
 
-WORKDIR /app
+# Installer les dépendances nécessaires pour Laravel
+RUN apt-get update && \
+    apt-get install -y \
+        libzip-dev \
+        unzip \
+        libfreetype6-dev \
+        libjpeg62-turbo-dev \
+        libpng-dev && \
+    docker-php-ext-install zip pdo_mysql gd
 
-# Copiez les fichiers de configuration
-COPY composer.json composer.json
-COPY composer.lock composer.lock
+# Activer le module Apache mod_rewrite
+RUN a2enmod rewrite
 
-# Installez les dépendances
-RUN composer install --no-dev --ignore-platform-reqs
+# Copier les fichiers de l'application Laravel dans le conteneur
+COPY . /var/www/html
 
-# Copiez le reste des fichiers
-COPY . .
-COPY .env .
+# Définir les permissions appropriées pour les dossiers de stockage Laravel
+RUN chown -R www-data:www-data /var/www/html/storage
 
-# Construisez l'application
-RUN composer dump-autoload --optimize
+# Exposer le port 80
+EXPOSE 80
 
-# Image de production légère
-FROM php:7.4-fpm-alpine
-
-WORKDIR /var/www/html
-
-# Installez les dépendances nécessaires pour Laravel
-RUN apk add --no-cache --virtual .build-deps \
-    build-base \
-    autoconf \
-    && docker-php-ext-install pdo pdo_mysql \
-    && apk del .build-deps
-
-# Copiez les fichiers de l'étape précédente
-COPY --from=builder /app /var/www/html
-
-# Définissez l'utilisateur et les permissions
-RUN addgroup -g 1000 -S www && \
-    adduser -u 1000 -D -S -G www www && \
-    chown -R www:www /var/www/html
-
-# Exposez le port sur lequel Laravel fonctionne par défaut
-EXPOSE 9002
-
-CMD ["php-fpm"]
+# Commande par défaut pour démarrer Apache
+CMD ["apache2-foreground"]
