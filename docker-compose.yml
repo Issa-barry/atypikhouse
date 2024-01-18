@@ -1,55 +1,43 @@
-version: '3.8'
+version: '3'
 
 services:
-  atypikhouse:
+  app:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: atypikhouse
-    working_dir: /var/www/html
-    env_file: .env
+    container_name: laravel-app
+    ports:
+      - "8083:80"
     networks:
-      - laravel
-    depends_on:
-      - mysql
+      - laravel_network
 
-  mysql:
+  db:
     image: mysql:5.7
-    container_name: atypikhouse-mysql
+    container_name: laravel-mysql
     environment:
-      MYSQL_ROOT_PASSWORD: dogomet
+      MYSQL_ALLOWEMPTY_PASSWORD: "yes"
       MYSQL_DATABASE: atypikhouse
-      MYSQL_USER: asma
-      MYSQL_PASSWORD: dogomet
-    networks:
-      - laravel
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_USER: laravel_user
+      MYSQL_PASSWORD: laravel_password
+    ports:
+      - "3306:3306"
     volumes:
-      - ./mysql/data:/var/lib/mysql
+      - ./mysql-data:/var/lib/mysql
+    networks:
+      - laravel_network
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    container_name: atypikhouse-phpmyadmin
+    container_name: laravel-phpmyadmin
     environment:
-      PMA_HOST: mysql
-      PMA_PORT: 3306
-    networks:
-      - laravel
-    depends_on:
-      - mysql
+      PMA_HOST: db
+      PMA_USER: laravel_user
+      PMA_PASSWORD: laravel_password
     ports:
-      - "8081:80"
-
-  caddy:
-    image: caddy:2.4.3
-    container_name: atypikhouse-caddy
+      - "8082:80"
     networks:
-      - laravel
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile
+      - laravel_network
 
 networks:
-  laravel:
-    driver: bridge
+  laravel_network:
