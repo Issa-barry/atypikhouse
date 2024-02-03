@@ -1,6 +1,0 @@
-issabarry.fr {
-    root * /var/www/html/public
-    php_fastcgi php-fpm:9002
-    file_server
-    encode gzip
-}

@@ -1,27 +1,24 @@
-# Utiliser l'image officielle PHP 7.4
+# Utilisez une image de PHP 7.4 avec Apache
 FROM php:7.4-apache
 
-# Installer les dépendances nécessaires pour Laravel
-RUN apt-get update && \
-    apt-get install -y \
-        libzip-dev \
-        unzip \
-        libfreetype6-dev \
-        libjpeg62-turbo-dev \
-        libpng-dev && \
-    docker-php-ext-install zip pdo_mysql gd
-
-# Activer le module Apache mod_rewrite
+# Activez le module Apache mod_rewrite
 RUN a2enmod rewrite
 
-# Copier les fichiers de l'application Laravel dans le conteneur
+# Installez les dépendances nécessaires
+RUN apt-get update && apt-get install -y \
+    libzip-dev \
+    unzip \
+    && docker-php-ext-install pdo pdo_mysql zip
+
+# Copiez les fichiers de l'application Laravel dans le conteneur
 COPY . /var/www/html
 
-# Définir les permissions appropriées pour les dossiers de stockage Laravel
-RUN chown -R www-data:www-data /var/www/html/storage
+# Définissez les permissions appropriées
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Exposer le port 80
+# Exposez le port 80 du conteneur
 EXPOSE 80
 
-# Commande par défaut pour démarrer Apache
+# Commande par défaut pour le conteneur
 CMD ["apache2-foreground"]
