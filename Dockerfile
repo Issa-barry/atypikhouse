@@ -4,12 +4,17 @@ FROM php:7.4-apache
 # Activez le module Apache mod_rewrite
 RUN a2enmod rewrite
 
-# Installez les dépendances nécessaires
-RUN apt-get update && apt-get install -y \
+# Mise à jour et installation de dépendances,  
+# Ajoutez cette ligne pour installer le paquet libgd
+RUN apt-get update && \
+    apt-get install -y \
+    libfreetype6-dev \
+    libjpeg62-turbo-dev \
+    libpng-dev \
     libzip-dev \
+    libgd-dev \ 
     unzip \
-    gd \
-    && docker-php-ext-install pdo pdo_mysql zip 
+    && docker-php-ext-install -j$(nproc) pdo pdo_mysql zip
 
 # Copiez les fichiers de l'application Laravel dans le conteneur
 COPY . /var/www/html
