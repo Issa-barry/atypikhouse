@@ -20,8 +20,8 @@ RUN apt-get update && \
 COPY . /var/www/html
 
 # Définissez les permissions appropriées
-RUN chown -R www-data:www-data /var/www/html/storage/logs /var/www/html/bootstrap/cache
-RUN chmod -R 777 /var/www/html/storage/logs /var/www/html/bootstrap/cache
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Exposez le port 80 du conteneur
 EXPOSE 80

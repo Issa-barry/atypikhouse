@@ -67,7 +67,9 @@ class AppServiceProvider extends ServiceProvider
                     // Gérez les erreurs éventuelles ici
                     echo 'Error creating symlink: ' . $e->getMessage();
                 }
-            }
+            }else {
+                        Artisan::call("storage:link", []);
+                    }
             
         }
 
