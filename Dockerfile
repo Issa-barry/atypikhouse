@@ -19,6 +19,13 @@ RUN apt-get update && \
 # Copiez les fichiers de l'application Laravel dans le conteneur
 COPY . /var/www/html
 
+# Installez Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+
+# Installez les dépendances Composer
+RUN composer install --no-interaction --optimize-autoloader --no-cache
+
 # Définissez les permissions appropriées
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 RUN chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache
