@@ -8,7 +8,8 @@ RUN a2enmod rewrite
 RUN apt-get update && apt-get install -y \
     libzip-dev \
     unzip \
-    && docker-php-ext-install pdo pdo_mysql zip
+    gd \
+    && docker-php-ext-install pdo pdo_mysql zip 
 
 # Copiez les fichiers de l'application Laravel dans le conteneur
 COPY . /var/www/html
