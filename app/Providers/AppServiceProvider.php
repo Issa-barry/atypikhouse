@@ -43,7 +43,7 @@ class AppServiceProvider extends ServiceProvider
         Schema::defaultStringLength(191);
 
         if(!app()->runningInConsole()) {
-            // create symlink storage
+            // create symlink storage,
             if (!is_link(public_path('storage'))) {
                 // if (!windows_os()) {
                 //     symlink(storage_path(), public_path('storage'));
