@@ -25,10 +25,6 @@ COPY . /var/www/html
 RUN chown -R www-data:www-data /var/www/html/storage/logs /var/www/html/bootstrap/cache
 RUN chmod -R 777 /var/www/html/storage/logs /var/www/html/bootstrap/cache
 
-#Symlink
-RUN rm -r storage
-RUN php artisan storage:link
-
 # Exposez le port 80 du conteneur
 EXPOSE 80
 
