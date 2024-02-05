@@ -44,31 +44,25 @@ class AppServiceProvider extends ServiceProvider
 
         if(!app()->runningInConsole()) {
             // create symlink storage,
-            if (!is_link(public_path('storage'))) {
+            // if (!is_link(public_path('storage'))) {
+            //     if (!windows_os()) {
+            //         symlink(storage_path(), public_path('storage'));
+            //     }  
+            //     else {
+            //         Artisan::call("storage:link", []);
+            //     }
+            // }
+            
+          
+
+            if (!is_link(public_path('storage')) && !file_exists(public_path('storage'))) {
                 if (!windows_os()) {
                     symlink(storage_path(), public_path('storage'));
-                }  
-                else {
+                } else {
                     Artisan::call("storage:link", []);
                 }
             }
             
-            // if (!file_exists(public_path('storage'))) {
-            //     try {
-            //         if (!windows_os()) {
-            //             // Pour les systèmes non-Windows, utilisez la fonction symlink
-            //             symlink(storage_path('app/public'), public_path('storage'));
-            //             echo 'Symlink process successfully completed';
-            //         } else {
-            //             // Pour Windows, utilisez la commande artisan storage:link
-            //             Artisan::call('storage:link');
-            //             echo 'Storage link process successfully completed using Artisan';
-            //         }
-            //     } catch (\Exception $e) {
-            //         // Gérez les erreurs éventuelles ici
-            //         echo 'Error creating symlink: ' . $e->getMessage();
-            //     }
-            // } 
             
         }
 
