@@ -14,8 +14,7 @@ RUN apt-get update && \
     libzip-dev \
     libgd-dev \ 
     unzip \
-    gd \
-    && docker-php-ext-install -j$(nproc) pdo pdo_mysql zip
+    && docker-php-ext-install -j$(nproc) pdo pdo_mysql gd zip
 
 # Copiez les fichiers de l'application Laravel dans le conteneur
 COPY . /var/www/html
