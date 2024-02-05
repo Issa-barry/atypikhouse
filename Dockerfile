@@ -24,7 +24,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 
 # Installez les dépendances Composer
-RUN composer install --no-interaction --optimize-autoloader
+# RUN composer install --no-interaction --optimize-autoloader
 
 # Définissez les permissions appropriées
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
