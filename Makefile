@@ -1,5 +1,5 @@
 pull:
-	sudo git pull && sudo rm -r storage && php artisan storage:link
+	sudo git pull 
 
 build:
 	sudo git pull && sudo docker compose build app --no-cache --force-rm
