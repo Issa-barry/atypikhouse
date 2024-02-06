@@ -1,6 +1,3 @@
-pull:
-	sudo git pull 
-
 build:
 	sudo git pull && sudo docker compose build app --no-cache --force-rm
 	
